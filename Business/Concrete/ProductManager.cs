@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
@@ -28,6 +29,7 @@ namespace Business.Concrete
         }
 
 
+        [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
@@ -73,13 +75,14 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails());
         }
 
+        [ValidationAspect(typeof(ProductValidator))]
         public IResult Update(Product product)
         {
             throw new NotImplementedException();
         }
 
 
-        //Bir kategoride en fazla 10 ürün olabilir kuralı için method
+        //Bir kategoride en fazla 15 ürün olabilir kuralı için method
         private IResult CheckIfProductCountOfCategory(int categoryId) 
         {
             var result = _productDal.GetAll(p => p.CategoryId == categoryId).Count;
